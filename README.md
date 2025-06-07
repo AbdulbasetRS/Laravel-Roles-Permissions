@@ -63,12 +63,8 @@ $role = $user->role;
 // Check if user has a specific role
 $user->hasRole('admin');
 
-// Check if user has any of the given roles
+// Check if user has any of the specified roles
 $user->hasAnyRole(['admin', 'editor']);
-
-// Check if user has all of the given roles (for backward compatibility)
-// Note: Since a user can have only one role, this checks if that role is in the given array
-$user->hasAllRoles(['admin', 'editor']);
 
 // Check if user has a permission
 $user->hasPermission('edit-posts');
@@ -82,15 +78,11 @@ $user->hasAllPermissions(['edit-posts', 'delete-posts']);
 // Assign a role to a user (replaces any existing role)
 $user->giveRole('editor');
 
-// Sync role (alias for giveRole, maintains backward compatibility)
-// Only the first role in the array will be used
-$user->syncRoles(['editor']);
+// Sync role (alias for giveRole)
+$user->syncRoles('editor');
 
 // Remove the user's role
 $user->removeRole();
-
-// Remove role only if it matches the given role slug
-$user->removeRole('editor');  // Only removes if the user has the 'editor' role
 ```
 
 ##### Example Usage:
@@ -375,7 +367,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 
-If you discover any security related issues, please email security@abdulbaset.com instead of using the issue tracker.
+If you discover any security related issues, please email abdulbasetredasayedhf@gmail.com instead of using the issue tracker.
 
 ## License
 

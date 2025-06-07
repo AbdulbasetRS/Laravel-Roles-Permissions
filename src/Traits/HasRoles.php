@@ -38,10 +38,14 @@ trait HasRoles
     }
 
     /**
-     * Check if the user has a specific role.
+     * Check if the user has the specified role.
      *
      * @param string $roleSlug The slug of the role to check
      * @return bool Returns true if the user has the specified role, false otherwise
+     * 
+     * @example
+     * // Check for a role
+     * $user->hasRole('admin');
      */
     public function hasRole(string $roleSlug): bool
     {
@@ -49,24 +53,16 @@ trait HasRoles
     }
 
     /**
-     * Check if the user has any of the given roles.
+     * Check if the user has any of the specified roles.
      *
      * @param array $roleSlugs Array of role slugs to check
      * @return bool Returns true if the user has any of the specified roles
+     * 
+     * @example
+     * // Check for multiple roles
+     * $user->hasAnyRole(['admin', 'editor']);
      */
     public function hasAnyRole(array $roleSlugs): bool
-    {
-        return $this->role && in_array($this->role->slug, $roleSlugs);
-    }
-
-    /**
-     * For backward compatibility, checks if the user's role matches all given roles.
-     * Since a user can have only one role, this checks if that role is in the given array.
-     *
-     * @param array $roleSlugs Array of role slugs to check
-     * @return bool Returns true if the user's role is in the given array
-     */
-    public function hasAllRoles(array $roleSlugs): bool
     {
         return $this->role && in_array($this->role->slug, $roleSlugs);
     }
@@ -145,31 +141,23 @@ trait HasRoles
     }
 
     /**
-     * Alias for giveRole to maintain backward compatibility.
-     * Only the first role in the array will be used.
+     * Alias for giveRole that accepts a single role slug.
+     * 
+     * @param string $roleSlug The slug of the role to assign
+     * @return void
      */
-    public function syncRoles(array $roleSlugs): void
+    public function syncRoles(string $roleSlug): void
     {
-        if (!empty($roleSlugs)) {
-            $this->giveRole($roleSlugs[0]);
-        } else {
-            $this->removeRole();
-        }
+        $this->giveRole($roleSlug);
     }
 
     /**
-     * Remove the user's role.
-     * If a role slug is provided, it will only be removed if it matches the current role.
+     * Remove the user's current role.
      * 
-     * @param string|null $roleSlug
      * @return bool Returns true if a role was removed, false otherwise
      */
-    public function removeRole(?string $roleSlug = null): bool
+    public function removeRole(): bool
     {
-        if ($roleSlug && !$this->hasRole($roleSlug)) {
-            return false;
-        }
-
         $deleted = \DB::table(config('roles.tables.role_user'))
             ->where('user_id', $this->id)
             ->delete();
