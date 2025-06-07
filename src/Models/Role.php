@@ -22,6 +22,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Role extends Model
 {
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table;
+
+    /**
+     * Create a new model instance.
+     *
+     * @param  array  $attributes
+     * @return void
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->table = config('roles.tables.roles');
+    }
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -29,6 +47,15 @@ class Role extends Model
     protected $fillable = [
         'name',        // The display name of the role (e.g., "Administrator")
         'slug',        // URL-friendly version of the name (e.g., "admin")
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'pivot'
     ];
 
     /**

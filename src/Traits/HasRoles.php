@@ -23,18 +23,18 @@ trait HasRoles
 {
     /**
      * Define the relationship between the user and their role.
-     * This is a one-to-many relationship where a user can have only one role.
+     * This is a many-to-many relationship using a pivot table.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function role()
     {
-        return $this->belongsTo(
+        return $this->belongsToMany(
             \Abdulbaset\RolesPermissions\Models\Role::class,
-            'id',
+            config('roles.tables.role_user'),
             'user_id',
-            config('roles.tables.role_user')
-        );
+            'role_id'
+        )->withTimestamps();
     }
 
     /**
@@ -49,7 +49,7 @@ trait HasRoles
      */
     public function hasRole(string $roleSlug): bool
     {
-        return $this->role && $this->role->slug === $roleSlug;
+        return $this->role()->where('slug', $roleSlug)->exists();
     }
 
     /**
@@ -64,7 +64,7 @@ trait HasRoles
      */
     public function hasAnyRole(array $roleSlugs): bool
     {
-        return $this->role && in_array($this->role->slug, $roleSlugs);
+        return $this->role()->whereIn('slug', $roleSlugs)->exists();
     }
 
     /**
@@ -76,8 +76,10 @@ trait HasRoles
      */
     public function hasPermission(string $permissionSlug): bool
     {
-        return $this->role && $this->role->permissions()
-            ->where('slug', $permissionSlug)
+        return $this->role()
+            ->whereHas('permissions', function($query) use ($permissionSlug) {
+                $query->where('slug', $permissionSlug);
+            })
             ->exists();
     }
 
@@ -89,8 +91,10 @@ trait HasRoles
      */
     public function hasAnyPermission(array $permissionSlugs): bool
     {
-        return $this->role && $this->role->permissions()
-            ->whereIn('slug', $permissionSlugs)
+        return $this->role()
+            ->whereHas('permissions', function($query) use ($permissionSlugs) {
+                $query->whereIn('slug', $permissionSlugs);
+            })
             ->exists();
     }
 
@@ -102,15 +106,16 @@ trait HasRoles
      */
     public function hasAllPermissions(array $permissionSlugs): bool
     {
-        if (!$this->role) {
+        $role = $this->role()->first();
+        if (!$role) {
             return false;
         }
 
-        $count = $this->role->permissions()
+        $permissionCount = $role->permissions()
             ->whereIn('slug', $permissionSlugs)
             ->count();
 
-        return $count === count($permissionSlugs);
+        return $permissionCount === count($permissionSlugs);
     }
 
     /**
@@ -122,22 +127,14 @@ trait HasRoles
      */
     public function giveRole(string $roleSlug): void
     {
-        $role = Role::firstOrCreate(
-            ['slug' => $roleSlug],
-            ['name' => ucfirst(str_replace('-', ' ', $roleSlug))]
-        );
+        $role = \Abdulbaset\RolesPermissions\Models\Role::where('slug', $roleSlug)->first();
 
-        // Remove any existing role first
-        $this->removeRole();
+        if (!$role) {
+            throw new \InvalidArgumentException("Role [{$roleSlug}] not found.");
+        }
 
-        // Attach the new role
-        \DB::table(config('roles.tables.role_user'))->updateOrInsert(
-            ['user_id' => $this->id],
-            ['role_id' => $role->id, 'created_at' => now(), 'updated_at' => now()]
-        );
-        
-        // Refresh the relationship
-        $this->load('role');
+        // Sync the role (will detach any existing roles first)
+        $this->role()->sync([$role->id]);
     }
 
     /**
@@ -158,15 +155,7 @@ trait HasRoles
      */
     public function removeRole(): bool
     {
-        $deleted = \DB::table(config('roles.tables.role_user'))
-            ->where('user_id', $this->id)
-            ->delete();
-
-        if ($deleted) {
-            $this->load('role');
-            return true;
-        }
-
-        return false;
+        $count = $this->role()->detach();
+        return $count > 0;
     }
 }
