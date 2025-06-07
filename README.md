@@ -2,6 +2,11 @@
 
 A simple and flexible package for handling roles and permissions in Laravel applications.
 
+## Requirements
+
+- PHP 8.1 or higher
+- Laravel 10.x, 11.x, or 12.x
+
 ## Features
 
 - Role-based access control (RBAC)
