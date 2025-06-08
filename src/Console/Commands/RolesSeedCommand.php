@@ -35,7 +35,7 @@ class RolesSeedCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Seed default roles and permissions from config/roles.php';
+    protected $description = 'Seed or update roles and their permissions from config/roles.php (preserves existing data)';
 
     /**
      * Execute the console command.

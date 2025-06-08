@@ -394,21 +394,74 @@ public function store(Request $request)
 
 ## Artisan Commands
 
-#### Seed Default Roles and Permissions
+### 1. Managing Roles
 
-```bash
-php artisan roles:seed
-```
-
-This command will create the default roles and permissions defined in the `config/roles.php` file.
-
-#### Sync Permissions with Database
+#### Sync Roles (Dangerous ⚠️)
 
 ```bash
 php artisan roles:sync
 ```
 
-This command will sync the permissions defined in the `config/roles.php` file with the database.
+This command will **synchronize** roles between your config file and database. It will:
+- Create any new roles from your config file
+- Update existing roles with new names
+- **Delete** any roles that are not in your config file
+
+> **⚠️ Warning:** This will remove any roles (and their relationships) that are not in your config file.
+
+#### Seed/Update Roles (Safe ✅)
+
+```bash
+php artisan roles:seed
+```
+
+This command will **safely seed or update** roles from your config file. It will:
+- Create any roles that don't exist
+- Update existing roles with new names
+- **Never delete** any existing roles or permissions
+
+### 2. Managing Permissions
+
+#### Sync Permissions (Dangerous ⚠️)
+
+```bash
+php artisan permissions:sync
+```
+
+This command will **synchronize** permissions between your config file and database. It will:
+- Create any new permissions from your config file
+- Update existing permissions if their names change
+- **Delete** any permissions not in your config file
+
+> **⚠️ Warning:** This will remove any permissions (and their relationships) that are not in your config file.
+
+#### Seed/Update Permissions (Safe ✅)
+
+```bash
+php artisan permissions:seed
+```
+
+This command will **safely seed or update** permissions from your config file. It will:
+- Create any new permissions that don't exist
+- Update existing permissions with new names
+- Restore any soft-deleted permissions
+- **Never delete** any existing permissions
+
+### When to Use Each Command
+
+| Command | Safe? | Best For |
+|---------|------|----------|
+| `roles:seed` | ✅ Safe | Initial setup or adding new roles without affecting existing ones |
+| `roles:sync` | ⚠️ Dangerous | Cleaning up old roles and ensuring database matches config exactly |
+| `permissions:seed` | ✅ Safe | Adding new permissions without affecting existing ones |
+| `permissions:sync` | ⚠️ Dangerous | Cleaning up old permissions and ensuring database matches config exactly |
+
+### Recommended Workflow
+
+1. Use the safe `roles:seed` and `permissions:seed` for normal development
+2. Only use `roles:sync` and `permissions:sync` when you need to clean up old data
+3. Always backup your database before running sync commands
+4. In production, consider running sync commands in a controlled manner after thorough testing
 
 ## Configuration
 

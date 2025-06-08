@@ -61,6 +61,8 @@ class RolesPermissionsServiceProvider extends ServiceProvider
             $this->commands([
                 Console\Commands\RolesSeedCommand::class,
                 Console\Commands\RolesSyncCommand::class,
+                Console\Commands\PermissionsSeedCommand::class,
+                Console\Commands\PermissionsSyncCommand::class,
             ]);
         }
     }
