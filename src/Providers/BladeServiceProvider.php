@@ -53,18 +53,6 @@ class BladeServiceProvider extends ServiceProvider
         });
 
         /**
-         * @hasallroles(['admin', 'editor'])
-         * 
-         * Checks if the authenticated user has all of the specified roles.
-         * Note: Since users have only one role, this checks if that role is in the given array.
-         * Example: @hasallroles(['admin', 'editor']) ... @endhasallroles
-         */
-        Blade::if('hasallroles', function ($roles) {
-            $user = Auth::user();
-            return $user && method_exists($user, 'hasAllRoles') && $user->hasAllRoles(is_array($roles) ? $roles : func_get_args());
-        });
-
-        /**
          * @haspermission('create-posts')
          * 
          * Checks if the authenticated user has the specified permission.

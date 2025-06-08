@@ -195,6 +195,34 @@ $adminRole->removePermissions(['edit-posts', 'delete-posts']);
 $removedCount = $adminRole->removeAllPermissions();
 ```
 
+## Permissions Methods
+
+### Using getPermissions()
+
+```php
+// Get all permissions for a role
+$rolePermissions = $role->getPermissions();
+
+// Get all permissions for a user's role
+$userPermissions = $user->getPermissions();
+
+// Example: Loop through permissions
+foreach ($user->getPermissions() as $permission) {
+    echo $permission->name; // e.g., 'edit-posts'
+    echo $permission->description; // e.g., 'Can edit posts'
+}
+
+// Check if user has any permissions
+if ($user->getPermissions()->isNotEmpty()) {
+    // User has permissions
+}
+
+// Check if role has any permissions
+if ($role->getPermissions()->isNotEmpty()) {
+    // Role has permissions
+}
+```
+
 ## Authorization Methods
 
 ### 1. Using FormRequest
