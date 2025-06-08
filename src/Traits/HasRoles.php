@@ -89,8 +89,23 @@ trait HasRoles
      */
     public function hasPermission(string $permissionSlug): bool
     {
-        $role = $this->role;
-        return $role && $role->permissions()->where('slug', $permissionSlug)->exists();
+        return $this->role()
+            ->whereHas('permissions', function($query) use ($permissionSlug) {
+                $query->where('slug', $permissionSlug);
+            })
+            ->exists();
+    }
+
+    /**
+     * Get all permissions associated with the user's role.
+     * Returns a collection of Permission models.
+     *
+     * @return \Illuminate\Support\Collection Collection of Permission models
+     */
+    public function getPermissions()
+    {
+        $role = $this->role()->first();
+        return $role ? $role->permissions : collect();
     }
 
     /**

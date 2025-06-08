@@ -106,6 +106,17 @@ class Role extends Model
     }
 
     /**
+     * Get all permissions associated with the role.
+     * Returns a collection of Permission models.
+     *
+     * @return \Illuminate\Support\Collection Collection of Permission models
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
+
+    /**
      * Check if the role has a specific permission.
      *
      * @param string $permissionSlug The slug of the permission to check
