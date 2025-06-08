@@ -47,6 +47,21 @@ class Role extends Model
     protected $fillable = [
         'name',        // The display name of the role (e.g., "Administrator")
         'slug',        // URL-friendly version of the name (e.g., "admin")
+        'description', // Description of the role's purpose and permissions
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'name' => 'string',
+        'slug' => 'string',
+        'description' => 'string',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**

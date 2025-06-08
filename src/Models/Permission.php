@@ -47,6 +47,21 @@ class Permission extends Model
     protected $fillable = [
         'name',  // The display name of the permission (e.g., "Create Posts")
         'slug',  // URL-friendly version of the name (e.g., "create-posts")
+        'description', // Description of what this permission allows
+    ];
+    
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'name' => 'string',
+        'slug' => 'string',
+        'description' => 'string',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**

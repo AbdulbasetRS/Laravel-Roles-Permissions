@@ -90,6 +90,40 @@ $user->syncRoles('editor');
 $user->removeRole();
 ```
 
+#### Role Model Methods
+
+```php
+// Create a new role with description
+$role = Role::create([
+    'name' => 'Editor',
+    'slug' => 'editor',
+    'description' => 'Can edit and manage content'
+]);
+
+// Update role description
+$role->update(['description' => 'Updated role description']);
+
+// Get role description
+$description = $role->description;
+```
+
+#### Permission Model Methods
+
+```php
+// Create a new permission with description
+$editPosts = Permission::create([
+    'name' => 'Edit Posts',
+    'slug' => 'edit-posts',
+    'description' => 'Allows editing of existing posts'
+]);
+
+// Update permission description
+$permission->update(['description' => 'Updated permission description']);
+
+// Get permission description
+$description = $permission->description;
+```
+
 ##### Example Usage:
 
 ```php
