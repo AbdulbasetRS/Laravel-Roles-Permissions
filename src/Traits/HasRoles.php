@@ -36,6 +36,19 @@ trait HasRoles
             'role_id'
         )->withTimestamps();
     }
+    
+    /**
+     * Get the user's single role.
+     * This method is used as an accessor to return only the first role
+     * when accessing the role attribute (e.g., $user->role).
+     * Since users have only one role, this ensures we always get a single role instance.
+     *
+     * @return \Abdulbaset\RolesPermissions\Models\Role|null Returns the user's role or null if no role is assigned
+     */
+    public function getRoleAttribute()
+    {
+        return $this->role()->first();
+    }
 
     /**
      * Check if the user has the specified role.
@@ -76,11 +89,8 @@ trait HasRoles
      */
     public function hasPermission(string $permissionSlug): bool
     {
-        return $this->role()
-            ->whereHas('permissions', function($query) use ($permissionSlug) {
-                $query->where('slug', $permissionSlug);
-            })
-            ->exists();
+        $role = $this->role;
+        return $role && $role->permissions()->where('slug', $permissionSlug)->exists();
     }
 
     /**
