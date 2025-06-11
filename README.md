@@ -2,6 +2,26 @@
 
 A simple and flexible package for handling roles and permissions in Laravel applications.
 
+## Why Guardify?
+
+### The Name
+
+The name **Guardify** is derived from the word "Guard", which reflects the core concept of the package — controlling access and guarding system resources through roles and permissions. The suffix "-ify" gives the name a modern and dynamic feel, indicating that the package helps you apply guarding rules in a flexible and efficient way.
+
+### The Concept
+
+Just like a security guard who determines who can enter a building and what areas they can access, Guardify helps you manage who can do what in your Laravel application — using a simple and expressive Role-Based Access Control (RBAC) system.
+
+In short: **Guardify = "Guard your app with simplicity and power"**.
+
+### Why Choose Guardify?
+
+- **Simplicity**: Easy to set up and use with minimal configuration
+- **Flexibility**: Adapts to your application's needs with customizable roles and permissions
+- **Performance**: Lightweight and optimized for speed
+- **Laravel Integration**: Built specifically for Laravel with best practices in mind
+- **Active Maintenance**: Regularly updated and maintained
+
 ## Requirements
 
 - PHP 8.1 or higher
