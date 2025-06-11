@@ -63,17 +63,35 @@ php artisan migrate
 
 ## Usage
 
+### Add HasRoles Trait to User Model
+
+Add the `HasRoles` trait to your User model:
+
+```php
+use Abdulbaset\Guardify\Traits\HasRoles;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable
+{
+    use HasRoles;
+    
+    // ...
+}
+```
+
+> **Important:** Each user can have only one role. The system enforces this constraint at the database level.
+
 ### Middleware
 
 This package includes three middleware classes that you can use to protect your routes. These middleware are automatically registered with the service provider and can be used in your route definitions or controller constructors.
 
-### Available Middleware
+#### Available Middleware
 
 1. **Role Middleware** - Restrict access to users with a specific role
 2. **Permission Middleware** - Restrict access to users with a specific permission
 3. **Role or Permission Middleware** - Restrict access to users with either a specific role or permission
 
-### Usage in Routes
+#### Usage in Routes
 
 You can use the middleware in your route definitions like this:
 
@@ -94,7 +112,7 @@ Route::get('/dashboard', function () {
 })->middleware('role_or_permission:admin|view-dashboard');
 ```
 
-### Usage in Controllers
+#### Usage in Controllers
 
 You can also apply middleware in your controller's constructor:
 
@@ -114,7 +132,7 @@ public function __construct()
 }
 ```
 
-### Multiple Roles/Permissions
+#### Multiple Roles/Permissions
 
 You can specify multiple roles or permissions by separating them with a comma:
 
@@ -130,7 +148,7 @@ Route::get('/posts', function () {
 })->middleware('permission:view-posts,manage-posts');
 ```
 
-### Middleware Groups
+#### Middleware Groups
 
 You can also use these middleware in route groups:
 
@@ -149,24 +167,6 @@ Route::middleware(['permission:edit-posts'])->group(function () {
     Route::put('/posts/{post}', 'PostController@update');
 });
 ```
-
-### Add HasRoles Trait to User Model
-
-Add the `HasRoles` trait to your User model:
-
-```php
-use Abdulbaset\Guardify\Traits\HasRoles;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-
-class User extends Authenticatable
-{
-    use HasRoles;
-    
-    // ...
-}
-```
-
-> **Important:** Each user can have only one role. The system enforces this constraint at the database level.
 
 ### Available Methods
 
