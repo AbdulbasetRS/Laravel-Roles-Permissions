@@ -46,15 +46,13 @@ class RolesPermissionsServiceProvider extends ServiceProvider
             __DIR__.'/../config/roles.php' => config_path('roles.php'),
         ], 'roles-config');
 
-        // Publish migrations
-        if (! class_exists('CreateRolesTable')) {
-            $this->publishes([
-                __DIR__.'/../database/migrations/create_roles_table.php.stub' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_roles_table.php'),
-                __DIR__.'/../database/migrations/create_permissions_table.php.stub' => database_path('migrations/'.date('Y_m_d_His', time() + 1).'_create_permissions_table.php'),
-                __DIR__.'/../database/migrations/create_role_user_table.php.stub' => database_path('migrations/'.date('Y_m_d_His', time() + 2).'_create_role_user_table.php'),
-                __DIR__.'/../database/migrations/create_permission_role_table.php.stub' => database_path('migrations/'.date('Y_m_d_His', time() + 3).'_create_permission_role_table.php'),
-            ], 'roles-migrations');
-        }
+        // Load migrations directly from the package
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        // Optionally allow publishing migrations
+        $this->publishes([
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+        ], 'roles-migrations');
 
         // Register commands
         if ($this->app->runningInConsole()) {

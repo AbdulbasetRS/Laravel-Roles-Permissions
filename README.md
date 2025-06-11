@@ -18,24 +18,28 @@ A simple and flexible package for handling roles and permissions in Laravel appl
 
 ## Installation
 
-You can install the package via Composer:
+1. Install the package via Composer:
 
 ```bash
 composer require abdulbaset/laravel-roles-permissions
 ```
 
-Publish the configuration file and migrations:
+2. Publish the configuration file (optional):
 
 ```bash
 php artisan vendor:publish --provider="Abdulbaset\RolesPermissions\RolesPermissionsServiceProvider" --tag=roles-config
-php artisan vendor:publish --provider="Abdulbaset\RolesPermissions\RolesPermissionsServiceProvider" --tag=roles-migrations
 ```
 
-Run the migrations:
+3. Run the migrations:
 
 ```bash
 php artisan migrate
 ```
+
+> **Note:** The migrations will run automatically from the package. If you need to modify them, you can publish them using:
+> ```bash
+> php artisan vendor:publish --provider="Abdulbaset\RolesPermissions\RolesPermissionsServiceProvider" --tag=roles-migrations
+> ```
 
 ## Usage
 
