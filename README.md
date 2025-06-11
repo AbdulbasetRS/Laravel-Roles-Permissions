@@ -1,5 +1,9 @@
 # Laravel Guardify
 
+<p align="center">
+    <img src="docs/thumbnail.png" alt="Laravel Guardify" width="400">
+</p>
+
 A simple and flexible package for handling roles and permissions in Laravel applications.
 
 ## Why Guardify?
