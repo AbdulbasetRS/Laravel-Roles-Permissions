@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Abdulbaset\RolesPermissions\RolesPermissionsServiceProvider;
+use Abdulbaset\Guardify\GuardifyServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase as Orchestra;
 

@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use Abdulbaset\RolesPermissions\Models\Permission;
-use Abdulbaset\RolesPermissions\Models\Role;
+use Abdulbaset\Guardify\Models\Permission;
+use Abdulbaset\Guardify\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
