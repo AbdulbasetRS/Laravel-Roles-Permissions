@@ -7,8 +7,13 @@ return [
     |--------------------------------------------------------------------------
     |
     | This array defines the default roles and their permissions that will be
-    | seeded when running the `roles:seed` Artisan command.
+    | seeded when running the `guardify:seed` Artisan command.
     |
+    * @package Abdulbaset\Guardify
+    * @author Abdulbaset R. Sayed
+    * @link https://github.com/AbdulbasetRS/laravel-guardify
+    * @version 1.0.0
+    * @license MIT
     */
     'roles' => [
         'admin' => [

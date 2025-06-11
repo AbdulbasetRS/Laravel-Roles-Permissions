@@ -1,9 +1,9 @@
 <?php
 
-namespace Abdulbaset\RolesPermissions\Console\Commands;
+namespace Abdulbaset\Guardify\Console\Commands;
 
 use Illuminate\Console\Command;
-use Abdulbaset\RolesPermissions\Models\Permission;
+use Abdulbaset\Guardify\Models\Permission;
 
 /**
  * PermissionsSeedCommand
@@ -11,9 +11,9 @@ use Abdulbaset\RolesPermissions\Models\Permission;
  * This Artisan command seeds the database with permissions from your configuration file.
  * It will only add new permissions and update existing ones, without deleting anything.
  *
- * @package Abdulbaset\RolesPermissions\Console\Commands
+ * @package Abdulbaset\Guardify\Console\Commands
  * @author Abdulbaset R. Sayed
- * @link https://github.com/AbdulbasetRS/laravel-roles-permissions
+ * @link https://github.com/AbdulbasetRS/laravel-guardify
  * @version 1.0.0
  * @license MIT
  */
@@ -24,14 +24,14 @@ class PermissionsSeedCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'permissions:seed';
+    protected $signature = 'guardify:permissions:seed';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Safely seed permissions from config file (does not remove anything)';
+    protected $description = 'Seed the database with permissions from the configuration file. This is a safe operation that only adds new permissions without removing existing ones.';
 
     /**
      * Execute the console command.
@@ -97,23 +97,31 @@ class PermissionsSeedCommand extends Command
      *
      * @return array
      */
-    protected function getAllPermissionsFromConfig()
+    protected function getPermissionsFromConfig(): array
     {
-        $allPermissions = [];
-        $roles = config('roles.roles', []);
-        
-        foreach ($roles as $roleData) {
-            if (!isset($roleData['permissions']) || !is_array($roleData['permissions'])) {
-                continue;
-            }
-            
-            foreach ($roleData['permissions'] as $permissionSlug) {
-                if (!empty($permissionSlug)) {
-                    $allPermissions[$permissionSlug] = ucfirst(str_replace('-', ' ', $permissionSlug));
+        $permissions = [];
+
+        // Get permissions from roles configuration
+        $roles = config('guardify.roles', []);
+
+        foreach ($roles as $role) {
+            if (isset($role['permissions']) && is_array($role['permissions'])) {
+                foreach ($role['permissions'] as $permission) {
+                    if (is_string($permission)) {
+                        $permissions[$permission] = [
+                            'name' => $permission,
+                            'description' => ucfirst(str_replace(['-', '_'], ' ', $permission)),
+                        ];
+                    } elseif (is_array($permission) && isset($permission['name'])) {
+                        $permissions[$permission['name']] = [
+                            'name' => $permission['name'],
+                            'description' => $permission['description'] ?? ucfirst(str_replace(['-', '_'], ' ', $permission['name'])),
+                        ];
+                    }
                 }
             }
         }
-        
-        return $allPermissions;
+
+        return array_values($permissions);
     }
 }

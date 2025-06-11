@@ -1,10 +1,10 @@
 <?php
 
-namespace Abdulbaset\RolesPermissions\Console\Commands;
+namespace Abdulbaset\Guardify\Console\Commands;
 
 use Illuminate\Console\Command;
-use Abdulbaset\RolesPermissions\Models\Role;
-use Abdulbaset\RolesPermissions\Models\Permission;
+use Abdulbaset\Guardify\Models\Role;
+use Abdulbaset\Guardify\Models\Permission;
 
 /**
  * RolesSeedCommand
@@ -14,9 +14,9 @@ use Abdulbaset\RolesPermissions\Models\Permission;
  * and their associated permissions, ensuring the database stays in sync
  * with your configuration.
  *
- * @package Abdulbaset\RolesPermissions\Console\Commands
+ * @package Abdulbaset\Guardify\Console\Commands
  * @author Abdulbaset R. Sayed
- * @link https://github.com/AbdulbasetRS/laravel-roles-permissions
+ * @link https://github.com/AbdulbasetRS/laravel-guardify
  * @link https://www.linkedin.com/in/abdulbaset-r-sayed
  * @version 1.0.0
  * @license MIT
@@ -28,14 +28,14 @@ class RolesSeedCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'roles:seed';
+    protected $signature = 'guardify:roles:seed';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Seed or update roles and their permissions from config/roles.php (preserves existing data)';
+    protected $description = 'Seed the database with default roles and permissions from the configuration file. This is a safe operation that only adds new roles and permissions without removing existing ones.';
 
     /**
      * Execute the console command.
@@ -51,10 +51,10 @@ class RolesSeedCommand extends Command
         $this->info('Seeding default roles and permissions...');
         
         try {
-            $roles = config('roles.roles', []);
+            $roles = config('guardify.roles', []);
             
             if (empty($roles)) {
-                $this->warn('No roles found in configuration. Please check your config/roles.php file.');
+                $this->warn('No roles found in configuration. Please check your config/guardify.php file.');
                 return 1;
             }
             

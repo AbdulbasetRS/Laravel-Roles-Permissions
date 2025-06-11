@@ -1,9 +1,9 @@
 <?php
 
-namespace Abdulbaset\RolesPermissions\Console\Commands;
+namespace Abdulbaset\Guardify\Console\Commands;
 
 use Illuminate\Console\Command;
-use Abdulbaset\RolesPermissions\Models\Permission;
+use Abdulbaset\Guardify\Models\Permission;
 
 /**
  * PermissionsSyncCommand
@@ -12,9 +12,9 @@ use Abdulbaset\RolesPermissions\Models\Permission;
  * and the database. It ensures that all permissions defined in your roles configuration
  * exist in the database, and removes any permissions that are no longer in use.
  *
- * @package Abdulbaset\RolesPermissions\Console\Commands
+ * @package Abdulbaset\Guardify\Console\Commands
  * @author Abdulbaset R. Sayed
- * @link https://github.com/AbdulbasetRS/laravel-roles-permissions
+ * @link https://github.com/AbdulbasetRS/laravel-guardify
  * @link https://www.linkedin.com/in/abdulbaset-r-sayed
  * @version 1.0.0
  * @license MIT
@@ -26,14 +26,14 @@ class PermissionsSyncCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'permissions:sync';
+    protected $signature = 'guardify:permissions:sync';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Synchronize permissions between config and database (removes permissions not in config)';
+    protected $description = 'Synchronize permissions with the configuration file. WARNING: This will remove any permissions that are not defined in the configuration file. Use with caution!';
 
     /**
      * Execute the console command.
@@ -52,29 +52,18 @@ class PermissionsSyncCommand extends Command
         
         try {
             $allPermissions = [];
-            $roles = config('roles.roles', []);
+            $roles = config('guardify.roles', []);
             
             if (empty($roles)) {
-                $this->warn('No roles found in configuration. Please check your config/roles.php file.');
+                $this->warn('No roles found in configuration. Please check your config/guardify.php file.');
                 return 1;
             }
             
             // Collect all unique permissions from all roles
             $this->line('🔍 Collecting permissions from roles configuration...');
-            foreach ($roles as $roleSlug => $roleData) {
-                if (!isset($roleData['permissions']) || !is_array($roleData['permissions'])) {
-                    $this->warn("Role '{$roleSlug}' has no permissions array. Skipping...");
-                    continue;
-                }
-                
-                foreach ($roleData['permissions'] as $permissionSlug) {
-                    if (!empty($permissionSlug)) {
-                        $allPermissions[$permissionSlug] = ucfirst(str_replace('-', ' ', $permissionSlug));
-                    }
-                }
-            }
+            $permissions = $this->getPermissionsFromConfig();
             
-            if (empty($allPermissions)) {
+            if (empty($permissions)) {
                 $this->warn('No valid permissions found in any role.');
                 return 1;
             }

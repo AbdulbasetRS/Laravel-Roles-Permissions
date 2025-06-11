@@ -1,6 +1,6 @@
 <?php
 
-namespace Abdulbaset\RolesPermissions\Models;
+namespace Abdulbaset\Guardify\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,9 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * Roles are used to group permissions and can be assigned to users.
  * Each user can have only one role, but roles can have multiple permissions.
  *
- * @package Abdulbaset\RolesPermissions\Models
+ * @package Abdulbaset\Guardify\Models
  * @author Abdulbaset R. Sayed
- * @link https://github.com/AbdulbasetRS/laravel-roles-permissions
+ * @link https://github.com/AbdulbasetRS/laravel-guardify
  * @link https://www.linkedin.com/in/abdulbaset-r-sayed
  * @version 1.0.0
  * @license MIT

@@ -1,8 +1,8 @@
 <?php
 
-namespace Abdulbaset\RolesPermissions\Traits;
+namespace Abdulbaset\Guardify\Traits;
 
-use Abdulbaset\RolesPermissions\Models\Role;
+use Abdulbaset\Guardify\Models\Role;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -12,9 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * It enables role-based access control (RBAC) with support for single role per user
  * and multiple permissions per role.
  *
- * @package Abdulbaset\RolesPermissions\Traits
+ * @package Abdulbaset\Guardify\Traits
  * @author Abdulbaset R. Sayed
- * @link https://github.com/AbdulbasetRS/laravel-roles-permissions
+ * @link https://github.com/AbdulbasetRS/laravel-guardify
  * @link https://www.linkedin.com/in/abdulbaset-r-sayed
  * @version 1.0.0
  * @license MIT

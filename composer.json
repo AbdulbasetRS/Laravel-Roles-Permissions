@@ -1,11 +1,11 @@
 {
-    "name": "abdulbaset/laravel-roles-permissions",
+    "name": "abdulbaset/laravel-guardify",
     "description": "A Laravel package for managing roles and permissions",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Abdulbaset\\RolesPermissions\\": "src/"
+            "Abdulbaset\\Guardify\\": "src/"
         }
     },
     "authors": [
@@ -25,7 +25,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Abdulbaset\\RolesPermissions\\RolesPermissionsServiceProvider"
+                "Abdulbaset\\Guardify\\GuardifyServiceProvider"
             ]
         }
     },

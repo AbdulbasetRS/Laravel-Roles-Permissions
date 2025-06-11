@@ -1,6 +1,6 @@
 <?php
 
-namespace Abdulbaset\RolesPermissions\Providers;
+namespace Abdulbaset\Guardify\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Auth;
  * It provides convenient @directives that can be used in Blade templates
  * to conditionally display content based on user roles and permissions.
  *
- * @package Abdulbaset\RolesPermissions\Providers
+ * @package Abdulbaset\Guardify\Providers
  * @author Abdulbaset R. Sayed
- * @link https://github.com/AbdulbasetRS/laravel-roles-permissions
+ * @link https://github.com/AbdulbasetRS/laravel-guardify
  * @link https://www.linkedin.com/in/abdulbaset-r-sayed
  * @version 1.0.0
  * @license MIT

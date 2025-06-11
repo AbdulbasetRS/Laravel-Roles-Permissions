@@ -1,4 +1,4 @@
-# Laravel Roles and Permissions
+# Laravel Guardify
 
 A simple and flexible package for handling roles and permissions in Laravel applications.
 
@@ -21,13 +21,13 @@ A simple and flexible package for handling roles and permissions in Laravel appl
 1. Install the package via Composer:
 
 ```bash
-composer require abdulbaset/laravel-roles-permissions
+composer require abdulbaset/laravel-guardify
 ```
 
 2. Publish the configuration file (optional):
 
 ```bash
-php artisan vendor:publish --provider="Abdulbaset\RolesPermissions\RolesPermissionsServiceProvider" --tag=roles-config
+php artisan vendor:publish --provider="Abdulbaset\Guardify\GuardifyServiceProvider" --tag=guardify-config
 ```
 
 3. Run the migrations:
@@ -38,17 +38,104 @@ php artisan migrate
 
 > **Note:** The migrations will run automatically from the package. If you need to modify them, you can publish them using:
 > ```bash
-> php artisan vendor:publish --provider="Abdulbaset\RolesPermissions\RolesPermissionsServiceProvider" --tag=roles-migrations
+> php artisan vendor:publish --provider="Abdulbaset\Guardify\GuardifyServiceProvider" --tag=guardify-migrations
 > ```
 
 ## Usage
+
+### Middleware
+
+This package includes three middleware classes that you can use to protect your routes. These middleware are automatically registered with the service provider and can be used in your route definitions or controller constructors.
+
+### Available Middleware
+
+1. **Role Middleware** - Restrict access to users with a specific role
+2. **Permission Middleware** - Restrict access to users with a specific permission
+3. **Role or Permission Middleware** - Restrict access to users with either a specific role or permission
+
+### Usage in Routes
+
+You can use the middleware in your route definitions like this:
+
+```php
+// Using role middleware
+Route::get('/admin', function () {
+    // Only users with the 'admin' role can access this route
+})->middleware('role:admin');
+
+// Using permission middleware
+Route::get('/posts/create', function () {
+    // Only users with the 'create-posts' permission can access this route
+})->middleware('permission:create-posts');
+
+// Using role or permission middleware
+Route::get('/dashboard', function () {
+    // Users with either the 'admin' role or 'view-dashboard' permission can access this route
+})->middleware('role_or_permission:admin|view-dashboard');
+```
+
+### Usage in Controllers
+
+You can also apply middleware in your controller's constructor:
+
+```php
+public function __construct()
+{
+    $this->middleware('role:admin');
+    
+    // Or for multiple roles
+    $this->middleware('role:admin,editor');
+    
+    // Using permission middleware
+    $this->middleware('permission:edit-posts');
+    
+    // Using role or permission middleware
+    $this->middleware('role_or_permission:admin|edit-posts');
+}
+```
+
+### Multiple Roles/Permissions
+
+You can specify multiple roles or permissions by separating them with a comma:
+
+```php
+// User must have all specified roles
+Route::get('/admin', function () {
+    // User must have BOTH 'admin' AND 'super-admin' roles
+})->middleware('role:admin,super-admin');
+
+// User must have at least one of the specified permissions
+Route::get('/posts', function () {
+    // User must have EITHER 'view-posts' OR 'manage-posts' permission
+})->middleware('permission:view-posts,manage-posts');
+```
+
+### Middleware Groups
+
+You can also use these middleware in route groups:
+
+```php
+// All routes in this group require the 'admin' role
+Route::middleware(['role:admin'])->group(function () {
+    Route::get('/admin/dashboard', 'AdminController@dashboard');
+    Route::get('/admin/users', 'AdminController@users');
+});
+
+// All routes in this group require the 'edit-posts' permission
+Route::middleware(['permission:edit-posts'])->group(function () {
+    Route::get('/posts/create', 'PostController@create');
+    Route::post('/posts', 'PostController@store');
+    Route::get('/posts/{post}/edit', 'PostController@edit');
+    Route::put('/posts/{post}', 'PostController@update');
+});
+```
 
 ### Add HasRoles Trait to User Model
 
 Add the `HasRoles` trait to your User model:
 
 ```php
-use Abdulbaset\RolesPermissions\Traits\HasRoles;
+use Abdulbaset\Guardify\Traits\HasRoles;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -403,33 +490,43 @@ public function store(Request $request)
 #### Sync Roles (Dangerous ⚠️)
 
 ```bash
-php artisan roles:sync
+php artisan guardify:roles:sync
 ```
 
 This command will **synchronize** roles between your config file and database. It will:
 - Create any new roles from your config file
-- Update existing roles with new names
-- **Delete** any roles that are not in your config file
-
-> **⚠️ Warning:** This will remove any roles (and their relationships) that are not in your config file.
+- Update existing roles if their names change
+- **Delete** any roles not in your config file
 
 #### Seed/Update Roles (Safe ✅)
 
 ```bash
-php artisan roles:seed
+php artisan guardify:roles:seed
 ```
 
 This command will **safely seed or update** roles from your config file. It will:
-- Create any roles that don't exist
-- Update existing roles with new names
-- **Never delete** any existing roles or permissions
+- Create any new roles from your config file
+- Update existing roles if their names change
+- **Never delete** any roles, even if they're not in your config file
 
 ### 2. Managing Permissions
 
 #### Sync Permissions (Dangerous ⚠️)
+#### Seed/Update Permissions (Safe ✅)
 
 ```bash
-php artisan permissions:sync
+php artisan guardify:permissions:seed
+```
+
+This command will **safely seed or update** permissions from your config file. It will:
+- Create any new permissions from your config file
+- Update existing permissions if their names change
+- **Never delete** any permissions, even if they're not in your config file
+
+#### Sync Permissions (Dangerous ⚠️)
+
+```bash
+php artisan guardify:permissions:sync
 ```
 
 This command will **synchronize** permissions between your config file and database. It will:
@@ -437,33 +534,19 @@ This command will **synchronize** permissions between your config file and datab
 - Update existing permissions if their names change
 - **Delete** any permissions not in your config file
 
-> **⚠️ Warning:** This will remove any permissions (and their relationships) that are not in your config file.
-
-#### Seed/Update Permissions (Safe ✅)
-
-```bash
-php artisan permissions:seed
-```
-
-This command will **safely seed or update** permissions from your config file. It will:
-- Create any new permissions that don't exist
-- Update existing permissions with new names
-- Restore any soft-deleted permissions
-- **Never delete** any existing permissions
-
 ### When to Use Each Command
 
 | Command | Safe? | Best For |
 |---------|------|----------|
-| `roles:seed` | ✅ Safe | Initial setup or adding new roles without affecting existing ones |
-| `roles:sync` | ⚠️ Dangerous | Cleaning up old roles and ensuring database matches config exactly |
-| `permissions:seed` | ✅ Safe | Adding new permissions without affecting existing ones |
-| `permissions:sync` | ⚠️ Dangerous | Cleaning up old permissions and ensuring database matches config exactly |
+| `guardify:roles:seed` | ✅ Safe | Initial setup or adding new roles without affecting existing ones |
+| `guardify:roles:sync` | ⚠️ Dangerous | Cleaning up old roles and ensuring database matches config exactly |
+| `guardify:permissions:seed` | ✅ Safe | Adding new permissions without affecting existing ones |
+| `guardify:permissions:sync` | ⚠️ Dangerous | Cleaning up old permissions and ensuring database matches config exactly |
 
 ### Recommended Workflow
 
-1. Use the safe `roles:seed` and `permissions:seed` for normal development
-2. Only use `roles:sync` and `permissions:sync` when you need to clean up old data
+1. Use the safe `guardify:roles:seed` and `guardify:permissions:seed` for normal development
+2. Only use `guardify:roles:sync` and `guardify:permissions:sync` when you need to clean up old data
 3. Always backup your database before running sync commands
 4. In production, consider running sync commands in a controlled manner after thorough testing
 

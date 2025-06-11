@@ -1,9 +1,9 @@
 <?php
 
-namespace Abdulbaset\RolesPermissions\Console\Commands;
+namespace Abdulbaset\Guardify\Console\Commands;
 
 use Illuminate\Console\Command;
-use Abdulbaset\RolesPermissions\Models\Role;
+use Abdulbaset\Guardify\Models\Role;
 
 /**
  * RolesSyncCommand
@@ -12,9 +12,9 @@ use Abdulbaset\RolesPermissions\Models\Role;
  * and the database. It ensures that all roles defined in your roles configuration
  * exist in the database, and removes any roles that are no longer in use.
  *
- * @package Abdulbaset\RolesPermissions\Console\Commands
+ * @package Abdulbaset\Guardify\Console\Commands
  * @author Abdulbaset R. Sayed
- * @link https://github.com/AbdulbasetRS/laravel-roles-permissions
+ * @link https://github.com/AbdulbasetRS/laravel-guardify
  * @version 1.0.0
  * @license MIT
  */
@@ -25,14 +25,14 @@ class RolesSyncCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'roles:sync';
+    protected $signature = 'guardify:roles:sync';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Synchronize roles between config and database (removes roles not in config)';
+    protected $description = 'Synchronize roles with the configuration file. WARNING: This will remove any roles that are not defined in the configuration file. Use with caution!';
 
     /**
      * Execute the console command.
@@ -44,10 +44,10 @@ class RolesSyncCommand extends Command
         $this->info('🔄 Syncing roles with database...');
         
         try {
-            $roles = config('roles.roles', []);
+            $roles = config('guardify.roles', []);
             
             if (empty($roles)) {
-                $this->warn('No roles found in configuration. Please check your config/roles.php file.');
+                $this->warn('No roles found in configuration. Please check your config/guardify.php file.');
                 return 1;
             }
             
